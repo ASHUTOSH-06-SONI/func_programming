@@ -2,6 +2,8 @@
 #include<string>
 #include<vector>
 #include<queue>
+#include<numeric>
+#include<algorithm>
 using namespace std;
 #define ll long long
 
@@ -35,53 +37,37 @@ vector<int> toDigitsRev(string s){
     return vector<int>(dq.begin(),dq.end());
 }
 vector<int> doubletheevens(const vector<int>& a){
-    vector<int> res = a;
-    for(int i=0; i<res.size();i++){
-        res[i] = (i%2==0)? 2*res[i]:res[i]; 
-    }
+    vector<int> res(a.size());
+    int i = 0;
+    transform(a.begin(), a.end(), res.begin(), [&](int x){
+        return (i++ % 2 == 1) ? 2 * x : x;
+    });
     return res;
 }
 // traverse, if any num is more then 10 then divide it by 10 and its rem also
-int sumDigits(vector<int>& a){
-    int sum =0;
-    for(int x:a){
+int sumDigits(const vector<int>& a){
+    return accumulate(a.begin(),a.end(),0,[](int acc,int x){
         if(x>=10){
-            sum+=x/10;
-            sum+=x%10;
-        }else{
-            sum+=x;
-        }
-    }return sum;
+            return acc + (x/10)+(x%10);
+        }return acc+x;
+    });
+}
+bool validate(const string& s){
+    int total = sumDigits(doubletheevens(toDigitsRev(s)));
+    return (total%10==0);
 }
 int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
-   //  int t; cin >> t;
- //   while(t--){
-      //  solve();
-//}g
     string s; 
     cout<<"Enter some shit (number daalo but in 1 unit)"<<'\n';
     cin>>s;
-    vector<int> digits = toDigits(s);
-    cout<< "Ascending: "<<'\n';
-    for(int i:digits){
-        cout<<i<<" ";
-    }cout<<'\n';
-    vector<int> revDigits = toDigitsRev(s);
-    cout<<"Descending: "<<'\n';
-    for(int i : revDigits){
-        cout << i << " ";
+    if(validate(s)){
+        cout<<"Valid"<<'\n';
+    }else{
+        cout<<"Invalid"<<'\n';
     }
-    cout<<'\n';
-    vector<int> doublethemup = doubletheevens(revDigits);
-    cout<<"Double the nums"<<'\n';
-    for(int i: doublethemup){
-        cout<<i<<" ";
-    }cout<<'\n';
-    int total = sumDigits(doublethemup);
-    cout << "Final sum: " << total << '\n';
 }
 
 
